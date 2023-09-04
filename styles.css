@@ -1,0 +1,50 @@
+.main-menu
+{
+    width:900px;
+    height:600px;
+    background: rgb(128, 173, 211);
+    border: 30px solid #666699;
+    margin: 50px auto;
+}
+
+h1
+{
+    font-size:120px;
+    text-align:center;
+    color:red;
+    font-family:Bangers;
+    stroke:aliceblue;
+    text-shadow: black 10px 10px 15px;
+    margin-bottom:150px;
+}
+
+.main-menu .mainmenu
+{
+    text-align:center;
+}
+
+.main-menu .mainmenu a
+{
+    
+    font-size:30px;
+    border: 5px solid black;
+    border-radius:5px;
+    text-decoration: none;
+    padding:10px;
+    font-family:Bangers;
+    background-color: black;
+    color:aliceblue;
+    box-shadow: black 10px 10px 10px;
+}
+
+.main-menu .mainmenu :hover
+{
+    font-size:35px;
+    border: 5px solid black;
+    border-radius:5px;
+    text-decoration: none;
+    padding:10px;
+    font-family:Bangers;
+    background-color: white;
+    color:black;
+}
