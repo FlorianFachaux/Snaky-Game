@@ -1,6 +1,6 @@
 window.onload = function () {
-  const canvasWidth = 1050;
-  const canvasHeight = 700;
+  const canvasWidth = 1650;
+  const canvasHeight = 775;
   const blockSize = 35;
   let canvasContext;
   const initialDelay = 400;
@@ -22,7 +22,6 @@ window.onload = function () {
     canvas.style.borderRadius = "15px";
     canvas.style.margin = "50px auto";
     canvas.style.display = "block";
-    canvas.style.backgroundColor = "lightgray";
     document.body.appendChild(canvas);
     canvasContext = canvas.getContext("2d");
     Snakee = new Snake(
@@ -52,10 +51,13 @@ window.onload = function () {
         } while (Applee.isOnSnake(Snakee));
 
         // Plus le score monte, plus la vitesse augmente aussi, avec une limite maximale
-        if (delay > 100) { // Limite vitesse maximale de 100 ms
+        if (delay > 100) {
+          // Limite vitesse maximale de 100 ms
           delay -= 10;
         }
-        console.log(delay);
+
+        // Animez l'échelle du score
+        animateScoreScale();
       }
 
       canvasContext.clearRect(0, 0, canvasWidth, canvasHeight);
@@ -64,6 +66,25 @@ window.onload = function () {
       Applee.draw();
       timeout = setTimeout(refreshCanvas, delay);
     }
+  }
+
+  function animateScoreScale() {
+    const maxScale = 1.5; // Échelle maximale
+    const duration = 500; // Durée de l'animation en millisecondes
+
+    let startTimestamp;
+    function step(timestamp) {
+      if (!startTimestamp) startTimestamp = timestamp;
+
+      const progress = (timestamp - startTimestamp) / duration;
+      scoreScale = Math.min(1 + progress * (maxScale - 1), maxScale);
+
+      if (progress < 1) {
+        requestAnimationFrame(step);
+      }
+    }
+
+    requestAnimationFrame(step);
   }
 
   //   Fontion de fin du jeu
@@ -126,17 +147,118 @@ window.onload = function () {
 
   //   Fonctions liées au Snake
   function Snake(body, direction) {
+    
+    const snakeImages = {
+      headUp: new Image(),
+      headDown: new Image(),
+      headLeft: new Image(),
+      headRight: new Image(),
+      tailUp: new Image(),
+      tailDown: new Image(),
+      tailLeft: new Image(),
+      tailRight: new Image(),
+      body: new Image(),
+    };
+
+    // Chargement des images (tête et queue)
+    snakeImages.headUp.src = "./images/head/head_up.png";
+    snakeImages.headDown.src = "./images/head/head_down.png";
+    snakeImages.headLeft.src = "./images/head/head_left.png";
+    snakeImages.headRight.src = "./images/head/head_right.png";
+    snakeImages.tailUp.src = "./images/tail/tail_up.png";
+    snakeImages.tailDown.src = "./images/tail/tail_down.png";
+    snakeImages.tailLeft.src = "./images/tail/tail_left.png";
+    snakeImages.tailRight.src = "./images/tail/tail_right.png";
+    snakeImages.body.src = "./images/worm_skin.png";
+
     this.body = body;
     this.direction = direction;
     this.ateApple = false;
 
     this.draw = function () {
       canvasContext.save();
-      canvasContext.fillStyle = "#710627";
-
+      
       for (let i = 0; i < this.body.length; i++) {
-        drawBlock(canvasContext, this.body[i]);
+        const x = this.body[i][0] * blockSize;
+        const y = this.body[i][1] * blockSize;
+
+        if (i === 0) {
+          // Tête du serpent
+          if (this.direction === "up") {
+            canvasContext.drawImage(
+              snakeImages.headUp,
+              x,
+              y,
+              blockSize,
+              blockSize
+            );
+          } else if (this.direction === "down") {
+            canvasContext.drawImage(
+              snakeImages.headDown,
+              x,
+              y,
+              blockSize,
+              blockSize
+            );
+          } else if (this.direction === "left") {
+            canvasContext.drawImage(
+              snakeImages.headLeft,
+              x,
+              y,
+              blockSize,
+              blockSize
+            );
+          } else if (this.direction === "right") {
+            canvasContext.drawImage(
+              snakeImages.headRight,
+              x,
+              y,
+              blockSize,
+              blockSize
+            );
+          }
+        } else if (i === this.body.length - 1) {
+          // Queue du serpent
+          const prevSegment = this.body[i - 1];
+          if (prevSegment[0] < this.body[i][0]) {
+            canvasContext.drawImage(
+              snakeImages.tailLeft,
+              x,
+              y,
+              blockSize,
+              blockSize
+            );
+          } else if (prevSegment[0] > this.body[i][0]) {
+            canvasContext.drawImage(
+              snakeImages.tailRight,
+              x,
+              y,
+              blockSize,
+              blockSize
+            );
+          } else if (prevSegment[1] < this.body[i][1]) {
+            canvasContext.drawImage(
+              snakeImages.tailUp,
+              x,
+              y,
+              blockSize,
+              blockSize
+            );
+          } else if (prevSegment[1] > this.body[i][1]) {
+            canvasContext.drawImage(
+              snakeImages.tailDown,
+              x,
+              y,
+              blockSize,
+              blockSize
+            );
+          }
+        } else {
+          // Segment du corps du serpent
+          canvasContext.drawImage(snakeImages.body, x, y, blockSize, blockSize);
+        }
       }
+
       canvasContext.restore();
     };
 
@@ -224,15 +346,15 @@ window.onload = function () {
   //   Fonctions liées à la pomme (Apple)
   function Apple(position) {
     this.position = position;
+    this.image = new Image();
+    this.image.src = "./images/apple.png";
+
     this.draw = function () {
       canvasContext.save();
-      canvasContext.fillStyle = "#00CC00";
-      canvasContext.beginPath();
-      const radius = blockSize / 2;
-      const x = this.position[0] * blockSize + radius;
-      const y = this.position[1] * blockSize + radius;
-      canvasContext.arc(x, y, radius, 0, Math.PI * 2, true);
-      canvasContext.fill();
+      const x = this.position[0] * blockSize;
+      const y = this.position[1] * blockSize;
+      canvasContext.drawImage(this.image, x, y, blockSize, blockSize);
+      canvasContext.boxShadow = "3px 3px 3px black"
       canvasContext.restore();
     };
 

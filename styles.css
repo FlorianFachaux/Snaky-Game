@@ -1,3 +1,12 @@
+body {
+    margin: 0;
+    padding: 0;
+    background-image: url('images/background.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+  }
+  
 .main-menu
 {
     width:900px;
@@ -25,14 +34,12 @@ h1
 
 .main-menu .mainmenu a
 {
-    
     font-size:30px;
     border: 5px solid black;
     border-radius:5px;
     text-decoration: none;
     padding:10px;
     font-family:Bangers;
-    background-color: black;
     color:aliceblue;
     box-shadow: black 10px 10px 10px;
 }
@@ -45,6 +52,5 @@ h1
     text-decoration: none;
     padding:10px;
     font-family:Bangers;
-    background-color: white;
     color:black;
 }
